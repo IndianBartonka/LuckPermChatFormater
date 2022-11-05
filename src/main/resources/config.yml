@@ -1,0 +1,7 @@
+#LuckPermChatFormater
+#By IndianPL
+# <msg> - player message
+# <suffix> - player group suffic
+# <player> - player name
+# <prefix> - player group prefix
+message.format: "<prefix> <player> <suffix> » <msg>"
