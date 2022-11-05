@@ -1,7 +1,30 @@
 #LuckPermChatFormater
 #By IndianPL
 # <msg> - player message
-# <suffix> - player group suffic
+# <suffix> - player group suffix
 # <player> - player name
 # <prefix> - player group prefix
-message.format: "<prefix> <player> <suffix> » <msg>"
+# <name> - player name
+# <health> - player health
+# <device> - player device
+# <model> - device model
+# <version> - Minecraft version
+# <language> - player Language
+
+#Formater
+message.format: "<prefix> <device> <player> <suffix> » <msg>"
+
+#Os
+Windows: "§f[§bWindows§f]"
+Android: "§f[§aAndroid§f]"
+Ios: "§f[§bIos§f]"
+Mac: "§f[§cMac Os§f]"
+Fire: "§f[§6Fire Os§f]"
+Gearvr: "§f[§aGearVr§f]"
+Hololens: "§f[§aHoloLens§f]"
+Dedicated: "§f[§aDedicated§f]"
+TvOs: "§f[§aTvOs§f]"
+PlayStation: "§f[§aPS§f]"
+Nx: "§f[§aNk§f]"
+Xbox: "§f[§aXbox§f]"
+Unknow: "§f[§aUnknow§f]"
