@@ -10,9 +10,18 @@
 # <model> - device model
 # <version> - Minecraft version
 # <language> - player Language
+# <ping> - player ping
 
 #Formater
-message.format: "<prefix> <device> <player> <suffix> » <msg>"
+message.format: "<prefix> <device> <player> <suffix> <ping> » <msg>"
+#Censorship
+censorship: "Bread"
+BlackWords:
+  - "dupa"
+  - "fuck"
+  - "nab"
+  - "ez"
+
 
 #Os
 Windows: "§f[§bWindows§f]"
@@ -25,6 +34,6 @@ Hololens: "§f[§aHoloLens§f]"
 Dedicated: "§f[§aDedicated§f]"
 TvOs: "§f[§aTvOs§f]"
 PlayStation: "§f[§aPS§f]"
-Nx: "§f[§aNk§f]"
+Nintendo: "§f[§aNintedno§f]"
 Xbox: "§f[§aXbox§f]"
 Unknow: "§f[§aUnknow§f]"
