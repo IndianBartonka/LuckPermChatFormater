@@ -13,15 +13,20 @@
 # <ping> - player ping
 
 #Formater
-message.format: "<prefix> <device> <player> <suffix> <ping> » <msg>"
+message.format: "<prefix> <player> <suffix> » <msg>"
 #Censorship
+#CenzorShip remove all Upper words
+enable-censorship: true
 censorship: "Bread"
 BlackWords:
   - "dupa"
   - "fuck"
   - "nab"
   - "ez"
-
+#Cooldown
+cooldown-enable: true
+cooldown: 5
+cooldown-message: "§aYou must wait §b <left>§eSeconds§a!"
 
 #Os
 Windows: "§f[§bWindows§f]"

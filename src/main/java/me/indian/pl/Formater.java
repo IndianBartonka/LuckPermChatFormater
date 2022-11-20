@@ -1,21 +1,21 @@
 package me.indian.pl;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerChatEvent;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
-import cn.nukkit.plugin.service.RegisteredServiceProvider;
 import cn.nukkit.utils.Config;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.cacheddata.CachedMetaData;
-import net.luckperms.api.cacheddata.CachedPermissionData;
 import net.luckperms.api.model.user.User;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public class Formater extends PluginBase implements Listener {
+    private HashMap<UUID, Long> cooldown = new HashMap<>();
 
 
     // IndianPL
@@ -27,20 +27,19 @@ public class Formater extends PluginBase implements Listener {
         if(getServer().getPluginManager().getPlugin("LuckPerms")== null){
             getLogger().warning("You dont have lucky perms");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         saveDefaultConfig();
-
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this , this);
     }
 
     @EventHandler
-    public void playerChat(PlayerChatEvent e) {
-        Player p = (Player) e.getPlayer();
+    public void playerChatFormat(PlayerChatEvent e) {
+        Player p =  e.getPlayer();
         String msg = e.getMessage();
         Config conf = this.getConfig();
-
 
 
         String cenzura = this.getConfig().getString("censorship");
@@ -51,37 +50,55 @@ public class Formater extends PluginBase implements Listener {
                     return;
                 }
             }
-            if(!(p.isOp())) {
-                msg = e.getMessage().toLowerCase().replace(czarnalista.toLowerCase(), cenzura);
-                e.setMessage(msg);
+            if(this.getConfig().getBoolean("enable-censorship")) {
+                if (!(p.isOp())) {
+                    msg = e.getMessage().toLowerCase().replace(czarnalista.toLowerCase(), cenzura);
+                    e.setMessage(msg);
+                }
             }
 
+            LuckPerms luckPerms = LuckPermsProvider.get();
+            User user = luckPerms.getPlayerAdapter(Player.class).getUser(p);
 
-        LuckPerms luckPerms = LuckPermsProvider.get();
-        User user = luckPerms.getPlayerAdapter(Player.class).getUser(p);
+            String prefix = Formater.getPrefix(user);
+            String suffix = Formater.getSuffix(user);
 
-        String prefix = Formater.getPrefix(user);
-        String suffix = Formater.getSuffix(user);
-
-        e.setFormat(this.getConfig().getString("message.format")
-                        .replace("<player>", p.getName())
-                        .replace("<prefix>", prefix)
-                        .replace("<suffix>", suffix)
-                        .replace("<msg>", msg)
-                        .replace("<device>", getDevice(p, this))
-                        .replace("<health>", p.getHealth() + "")
-                        .replace("<model>", p.getLoginChainData().getDeviceModel() + "")
-                        .replace("<version>", p.getLoginChainData().getGameVersion())
-                        .replace("<language>", p.getLoginChainData().getLanguageCode())
-                        .replace("<ping>", getPing(p))
-                //message.format: "<prefix> <player> <suffix> >> <msg>
-        );
-
-
-
-
+            e.setFormat(this.getConfig().getString("message.format")
+                            .replace("<player>", p.getName())
+                            .replace("<prefix>", prefix)
+                            .replace("<suffix>", suffix)
+                            .replace("<msg>", msg)
+                            .replace("<device>", getDevice(p, this))
+                            .replace("<health>", p.getHealth() + "")
+                            .replace("<model>", p.getLoginChainData().getDeviceModel() + "")
+                            .replace("<version>", p.getLoginChainData().getGameVersion())
+                            .replace("<language>", p.getLoginChainData().getLanguageCode())
+                            .replace("<ping>", getPing(p))
+                    //message.format: "<prefix> <player> <suffix> >> <msg>
+            );
         }
     }
+
+    @EventHandler
+    public void cooldownMessage(PlayerChatEvent e){
+        Player p = (Player) e.getPlayer();
+        Config conf = this.getConfig();
+        Long time = conf.getLong("cooldown") * 100;
+        if(conf.getBoolean("cooldown-enable")) {
+            if(!(p.isOp())) {
+                if (!cooldown.containsKey(p.getUniqueId()) || System.currentTimeMillis() - cooldown.get(p.getUniqueId()) > time) {
+                    cooldown.put(p.getUniqueId(), System.currentTimeMillis());
+                } else {
+                    long cooldownTime = (time - (System.currentTimeMillis() - cooldown.get(p.getUniqueId()))) / 100;
+                    e.setCancelled(true);
+                    p.sendMessage(conf.getString("cooldown-message")
+                            .replace("<left>", cooldownTime + ""));
+                }
+            }
+        }
+    }
+
+
 
     public static String getPrefix(User user){
         String prefix = "";

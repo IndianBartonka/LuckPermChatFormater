@@ -1,5 +1,5 @@
 main: me.indian.pl.Formater
 name: LuckPermChatFormater
 author: IndianPL
-version: 2.1
+version: 2.2
 api: [ "1.0.14" ]
